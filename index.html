@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Creating Quote Sandwiches</title>
+  <meta name="description" content="A simple help page for integrating quotes using the quote sandwich method." />
+
+  <style>
+    :root{
+      --bg: #0f1115;
+      --panel: #151924;
+      --panel-2: #111521;
+      --text: #e9edf5;
+      --muted: #b9c2d3;
+      --muted-2: #98a3b8;
+      --border: #2a3246;
+      --accent: #7aa2ff;
+      --accent-2: #a7c0ff;
+      --ok: #7ef0c4;
+      --warn: #ffd27a;
+
+      --max: 980px;
+      --radius: 16px;
+      --pad: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
+      margin: 0;
+      font-family: var(--sans);
+      background: radial-gradient(1200px 700px at 20% 0%, rgba(122,162,255,.18), transparent 55%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(126,240,196,.10), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+    code, pre{ font-family: var(--mono); }
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 26px 18px 60px; }
+
+    header{
+      background: linear-gradient(180deg, rgba(21,25,36,.92), rgba(21,25,36,.72));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after{
+      content:"";
+      position:absolute;
+      inset:-120px -140px auto auto;
+      width: 280px;
+      height: 280px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, rgba(122,162,255,.25), rgba(122,162,255,0) 65%);
+      filter: blur(2px);
+      pointer-events:none;
+    }
+
+    .kicker{
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: .02em;
+      margin: 0 0 6px;
+    }
+
+    h1{
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.15;
+    }
+
+    .sub{
+      margin: 0 0 14px;
+      color: var(--muted);
+      max-width: 75ch;
+    }
+
+    .jump{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(17,21,33,.9);
+      color: var(--text);
+      font-size: 14px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.18);
+      transition: transform .08s ease;
+    }
+    .pill:hover{ transform: translateY(-1px); text-decoration: none; border-color: rgba(122,162,255,.55); }
+    .pill small{ color: var(--muted-2); }
+
+    main{ margin-top: 18px; display: grid; gap: 18px; }
+
+    section{
+      background: linear-gradient(180deg, rgba(21,25,36,.92), rgba(17,21,33,.92));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    section h2{
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    section p{ margin: 10px 0; color: var(--text); }
+    .muted{ color: var(--muted); }
+
+    .grid-3{
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @media (max-width: 860px){
+      .grid-3{ grid-template-columns: 1fr; }
+      h1{ font-size: 30px; }
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(15,17,21,.55);
+    }
+
+    .tag{
+      display:inline-block;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(17,21,33,.7);
+      margin-bottom: 10px;
+    }
+
+    .card h3{
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    ul{ margin: 10px 0 0 18px; color: var(--muted); }
+    li{ margin: 6px 0; }
+
+    .example{
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      background: rgba(122,162,255,.08);
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .label-line{
+      display:flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 6px;
+    }
+
+    .label{
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: rgba(17,21,33,.7);
+    }
+    .label.top{ border-color: rgba(122,162,255,.6); }
+    .label.fill{ border-color: rgba(255,210,122,.55); }
+    .label.bottom{ border-color: rgba(126,240,196,.55); }
+
+    .model{
+      background: rgba(15,17,21,.55);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .model p{
+      margin: 10px 0;
+      color: var(--text);
+    }
+
+    .callout{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: start;
+    }
+    @media (max-width: 860px){
+      .callout{ grid-template-columns: 1fr; }
+    }
+
+    .box{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(15,17,21,.55);
+    }
+
+    .box h3{ margin: 0 0 8px; font-size: 18px; }
+    .box p, .box li{ color: var(--muted); }
+
+    pre{
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(11,13,18,.75);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      overflow: auto;
+      color: var(--text);
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button{
+      appearance: none;
+      border: 1px solid var(--border);
+      background: rgba(17,21,33,.92);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform .08s ease, border-color .12s ease;
+    }
+    button:hover{ transform: translateY(-1px); border-color: rgba(122,162,255,.55); }
+    button:active{ transform: translateY(0px); }
+
+    .tiny{ font-size: 13px; color: var(--muted-2); margin-top: 8px; }
+
+    .checklist{
+      display:grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .check{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(15,17,21,.55);
+    }
+    .dot{
+      width: 10px;
+      height: 10px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      flex: 0 0 auto;
+      opacity: .9;
+    }
+    .check p{ margin: 0; color: var(--muted); }
+
+    details{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(15,17,21,.55);
+      padding: 12px 14px;
+    }
+    summary{
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 600;
+      list-style: none;
+    }
+    summary::-webkit-details-marker{ display: none; }
+    details p, details li{ color: var(--muted); }
+
+    footer{
+      margin-top: 16px;
+      color: var(--muted-2);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .kbd{
+      display:inline-block;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(17,21,33,.92);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header id="top">
+      <p class="kicker">Class help page</p>
+      <h1>Creating Quote Sandwiches</h1>
+      <p class="sub">
+        A quote sandwich helps you integrate quotes smoothly, so your reader always knows what the quote is, why it is here, and how it connects to your point.
+      </p>
+
+      <nav class="jump" aria-label="Jump links">
+        <a class="pill" href="#what-is">What it is <small>definition</small></a>
+        <a class="pill" href="#three-parts">The 3 parts <small>top, filling, bottom</small></a>
+        <a class="pill" href="#model">Model <small>full example</small></a>
+        <a class="pill" href="#build">Build your own <small>OOH activity</small></a>
+        <a class="pill" href="#submit">Canvas submission <small>what to turn in</small></a>
+        <a class="pill" href="#checklist">Checklist <small>quick self-check</small></a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="what-is">
+        <h2>What is a quote sandwich?</h2>
+        <p class="muted">
+          A quote sandwich is a way to integrate quotes into your writing so they do not feel dropped in. Every quote gets:
+          an introduction, the quote itself, and an explanation that connects to your point.
+        </p>
+
+        <details>
+          <summary>Why teachers care about this</summary>
+          <p>
+            Quotes do not automatically prove your point. Your job is to explain how the quote supports your claim.
+            If you end a paragraph with a quote and no explanation, the reader has to do your thinking for you.
+          </p>
+        </details>
+      </section>
+
+      <section id="three-parts">
+        <h2>The three parts</h2>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="tag">Top Bread</span>
+            <h3>Introduce the quote</h3>
+            <p class="muted">
+              Give context so the reader understands who is speaking and why the quote matters.
+            </p>
+            <ul>
+              <li>Name the author (usually last name).</li>
+              <li>Name the text or source (if needed).</li>
+              <li>Say what the quote is about, in your own words.</li>
+            </ul>
+
+            <div class="example">
+              <div class="label-line"><span class="label top">Example</span></div>
+              <p>
+                In her essay “The Power of Stories,” Jones argues that storytelling is essential for human connection.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="tag">Filling</span>
+            <h3>Insert the quote</h3>
+            <p class="muted">
+              Use the exact wording, and include your MLA parenthetical citation.
+            </p>
+            <ul>
+              <li>Keep quotes short unless you truly need more.</li>
+              <li>Use quotation marks for short quotes.</li>
+              <li>MLA parenthetical citation goes at the end of the sentence.</li>
+            </ul>
+
+            <div class="example">
+              <div class="label-line"><span class="label fill">Example</span></div>
+              <p>
+                Jones states, “Stories are how we make sense of the world and connect to others” (45).
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="tag">Bottom Bread</span>
+            <h3>Explain the quote</h3>
+            <p class="muted">
+              Interpret the quote. Do not just repeat it. Tell the reader how it supports your point.
+            </p>
+            <ul>
+              <li>What does this quote show?</li>
+              <li>How does it connect to your thesis or claim?</li>
+              <li>Why does it matter for your argument?</li>
+            </ul>
+
+            <div class="example">
+              <div class="label-line"><span class="label bottom">Example</span></div>
+              <p>
+                This suggests that storytelling is not just entertainment but a fundamental way humans relate to each other.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="model">
+        <h2>Model quote sandwich (all together)</h2>
+        <p class="muted">Notice how each sentence has a job.</p>
+
+        <div class="model" role="group" aria-label="Model quote sandwich">
+          <div class="label-line"><span class="label top">Top Bread</span></div>
+          <p>In her essay “The Power of Stories,” Jones argues that storytelling is essential for human connection.</p>
+
+          <div class="label-line"><span class="label fill">Filling</span></div>
+          <p>Jones states, “Stories are how we make sense of the world and connect to others” (45).</p>
+
+          <div class="label-line"><span class="label bottom">Bottom Bread</span></div>
+          <p>This suggests that storytelling is not just a form of entertainment but a fundamental way humans relate to each other.</p>
+        </div>
+      </section>
+
+      <section id="build">
+        <h2>Build your own quote sandwich (Occupational Outlook Handbook)</h2>
+
+        <div class="callout">
+          <div class="box">
+            <h3>What you do</h3>
+            <ol style="margin: 10px 0 0 18px; color: var(--muted);">
+              <li>Open the Occupational Outlook Handbook page for your chosen career.</li>
+              <li>Find one short quote (1 to 2 sentences) that gives a useful fact or claim about the career.</li>
+              <li>Write a quote sandwich using that quote.</li>
+              <li>Submit it on Canvas (copy and paste).</li>
+            </ol>
+
+            <details style="margin-top: 12px;">
+              <summary>What counts as a good quote for this</summary>
+              <ul>
+                <li>Job duties, work environment, pay, growth outlook, education, skills, or licensing.</li>
+                <li>Something that helps you explain what the career is really like.</li>
+                <li>Something you can respond to and interpret (not just a random sentence).</li>
+              </ul>
+            </details>
+          </div>
+
+          <div class="box">
+            <h3>Rules</h3>
+            <ul>
+              <li>Quote must be 1 to 2 sentences max.</li>
+              <li>Your Bottom Bread must be at least 2 sentences.</li>
+              <li>Your explanation must connect to your career goal (why it matters for your plan).</li>
+              <li>If the page does not show page numbers, that is fine. Do not invent a page number.</li>
+            </ul>
+            <p class="tiny">
+              Tip: Aim for a quote you can actually analyze, not just one you can copy.
+            </p>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 14px;">Copy and paste template</h3>
+        <p class="muted">
+          Fill this in. Keep the language simple. Your Bottom Bread should explain the meaning and why it matters for your plan.
+        </p>
+
+        <pre id="templateText">Top Bread (Introduce):
+On the Occupational Outlook Handbook page for [Career], the U.S. Bureau of Labor Statistics explains [what the quote is about].
+
+Filling (Quote + MLA parenthetical if available):
+The OOH states, “[paste quote here]”.
+
+Bottom Bread (Explain):
+This matters because [your interpretation]. Specifically, this connects to my plan because [how it affects your choices: major, training, skills, expectations, etc.].</pre>
+
+        <div class="actions">
+          <button type="button" data-copy="#templateText">Copy template</button>
+        </div>
+
+        <h3 style="margin-top: 14px;">Works Cited line (copy and paste)</h3>
+        <p class="muted">
+          Replace the brackets. For OOH pages, you will almost always use the web citation format and include an access date.
+        </p>
+
+        <pre id="worksCitedText">“[Page Title].” Occupational Outlook Handbook, U.S. Bureau of Labor Statistics, [URL]. Accessed [Month Day, Year].</pre>
+
+        <div class="actions">
+          <button type="button" data-copy="#worksCitedText">Copy Works Cited line</button>
+        </div>
+      </section>
+
+      <section id="submit">
+        <h2>Canvas submission</h2>
+        <p class="muted">
+          Submit to the assignment: <strong>Quote Sandwich (OOH)</strong>
+        </p>
+
+        <div class="box">
+          <h3>What to paste into Canvas</h3>
+          <ol style="margin: 10px 0 0 18px; color: var(--muted);">
+            <li>Your full 3-part quote sandwich (Top Bread, Filling, Bottom Bread).</li>
+            <li>Your Works Cited line.</li>
+          </ol>
+          <p class="tiny">
+            If you want to format it cleanly in Canvas, add line breaks between parts. If Canvas removes your spacing, that is fine.
+          </p>
+        </div>
+      </section>
+
+      <section id="checklist">
+        <h2>Quick checklist</h2>
+        <div class="checklist">
+          <div class="check"><span class="dot"></span><p>Did I introduce the quote (who, what, why this quote is here)?</p></div>
+          <div class="check"><span class="dot"></span><p>Did I keep the quote short and copy it exactly?</p></div>
+          <div class="check"><span class="dot"></span><p>Did I include MLA citation info when available (and not invent page numbers)?</p></div>
+          <div class="check"><span class="dot"></span><p>Did I explain what the quote shows and how it supports my point?</p></div>
+          <div class="check"><span class="dot"></span><p>Did I write at least 2 sentences of Bottom Bread (analysis, not summary)?</p></div>
+          <div class="check"><span class="dot"></span><p>Did I avoid ending my paragraph with a quote?</p></div>
+        </div>
+
+        <details style="margin-top: 12px;">
+          <summary>Common issues</summary>
+          <ul>
+            <li>Dropping a quote with no Top Bread.</li>
+            <li>Explaining what the quote says instead of what it does (analysis).</li>
+            <li>Using a quote that is so long that your explanation becomes tiny.</li>
+            <li>Using a quote that is only a definition or a bland statement you cannot interpret.</li>
+          </ul>
+        </details>
+
+        <div class="actions" style="margin-top: 12px;">
+          <a class="pill" href="#top">Back to top <small>jump</small></a>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          If you see something confusing on this page, tell me what line or section it is in.
+          That helps me fix it fast.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Copy-to-clipboard for template and Works Cited line
+    function copyFrom(selector){
+      const el = document.querySelector(selector);
+      if(!el) return;
+      const text = el.innerText;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          flashCopied(selector);
+        }).catch(() => fallbackCopy(text, selector));
+      } else {
+        fallbackCopy(text, selector);
+      }
+    }
+
+    function fallbackCopy(text, selector){
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try{
+        document.execCommand("copy");
+        flashCopied(selector);
+      } catch (e){
+        alert("Copy did not work. You can manually select and copy the text.");
+      }
+      document.body.removeChild(ta);
+    }
+
+    function flashCopied(selector){
+      const btn = document.querySelector('button[data-copy="' + selector + '"]');
+      if(!btn) return;
+      const original = btn.textContent;
+      btn.textContent = "Copied";
+      btn.style.borderColor = "rgba(126,240,196,.65)";
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.borderColor = "";
+      }, 900);
+    }
+
+    document.querySelectorAll("button[data-copy]").forEach(btn => {
+      btn.addEventListener("click", () => copyFrom(btn.getAttribute("data-copy")));
+    });
+  </script>
+</body>
+</html>
