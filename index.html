@@ -4,609 +4,904 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Creating Quote Sandwiches</title>
-  <meta name="description" content="A simple help page for integrating quotes using the quote sandwich method." />
+  <meta name="description" content="An interactive ENG 101 practice page for building quote sandwiches with introduction, evidence, and explanation." />
 
   <style>
     :root{
-      --bg: #0f1115;
-      --panel: #151924;
-      --panel-2: #111521;
-      --text: #e9edf5;
-      --muted: #b9c2d3;
-      --muted-2: #98a3b8;
-      --border: #2a3246;
-      --accent: #7aa2ff;
-      --accent-2: #a7c0ff;
-      --ok: #7ef0c4;
-      --warn: #ffd27a;
-
-      --max: 980px;
-      --radius: 16px;
-      --pad: 18px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      --paper:#f7efe3;
+      --paper-2:#fffaf1;
+      --ink:#27211f;
+      --muted:#665b53;
+      --soft:#e8d8c3;
+      --line:#d9c2a9;
+      --clay:#a9573f;
+      --clay-dark:#743928;
+      --plum:#342438;
+      --sage:#6f7f67;
+      --gold:#c79a3c;
+      --white:#fffdf8;
+      --shadow:0 18px 45px rgba(71, 45, 29, .14);
+      --shadow-soft:0 8px 24px rgba(71, 45, 29, .1);
+      --radius:24px;
+      --radius-sm:16px;
+      --max:1180px;
+      --serif:Georgia, "Times New Roman", serif;
+      --sans:Arial, Helvetica, sans-serif;
     }
 
-    *{ box-sizing: border-box; }
-    html, body{ height: 100%; }
+    *{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
     body{
-      margin: 0;
-      font-family: var(--sans);
-      background: radial-gradient(1200px 700px at 20% 0%, rgba(122,162,255,.18), transparent 55%),
-                  radial-gradient(900px 500px at 90% 10%, rgba(126,240,196,.10), transparent 55%),
-                  var(--bg);
-      color: var(--text);
-      line-height: 1.55;
+      margin:0;
+      color:var(--ink);
+      font-family:var(--sans);
+      font-size:18px;
+      line-height:1.6;
+      background:
+        radial-gradient(circle at top left, rgba(199,154,60,.18), transparent 34rem),
+        radial-gradient(circle at 90% 10%, rgba(111,127,103,.16), transparent 32rem),
+        linear-gradient(180deg, var(--paper), #f1e4d4 52%, #ead9c5);
     }
 
-    a{ color: var(--accent); text-decoration: none; }
-    a:hover{ text-decoration: underline; }
-    code, pre{ font-family: var(--mono); }
-    .wrap{ max-width: var(--max); margin: 0 auto; padding: 26px 18px 60px; }
-
-    header{
-      background: linear-gradient(180deg, rgba(21,25,36,.92), rgba(21,25,36,.72));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+    a{color:var(--clay-dark);}
+    a:focus, button:focus, input:focus, textarea:focus, summary:focus{
+      outline:3px solid rgba(169,87,63,.42);
+      outline-offset:3px;
     }
 
-    header::after{
+    .skip-link{
+      position:absolute;
+      left:-999px;
+      top:12px;
+      z-index:20;
+      padding:10px 14px;
+      background:var(--plum);
+      color:#fff;
+      border-radius:999px;
+    }
+    .skip-link:focus{left:12px;}
+
+    .page{
+      width:min(var(--max), calc(100% - 32px));
+      margin:0 auto;
+      padding:28px 0 70px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(217,194,169,.9);
+      border-radius:32px;
+      background:
+        linear-gradient(135deg, rgba(255,250,241,.96), rgba(246,234,218,.94)),
+        repeating-linear-gradient(90deg, rgba(52,36,56,.04) 0 1px, transparent 1px 84px);
+      box-shadow:var(--shadow);
+      padding:42px;
+      display:grid;
+      grid-template-columns:minmax(0, 1.2fr) minmax(260px, .8fr);
+      gap:28px;
+      align-items:end;
+    }
+    .time-box{
+      position:absolute;
+      top:22px;
+      right:22px;
+      z-index:2;
+      border:1px solid rgba(116,57,40,.18);
+      border-radius:18px;
+      background:rgba(255,253,248,.86);
+      box-shadow:0 10px 24px rgba(71,45,29,.1);
+      padding:10px 14px;
+      min-width:150px;
+      text-align:left;
+    }
+    .time-box .time-label{
+      display:block;
+      margin:0 0 2px;
+      font-size:.72rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      font-weight:700;
+      color:var(--clay-dark);
+    }
+    .time-box .time-value{
+      display:block;
+      margin:0;
+      font-family:var(--serif);
+      font-size:1.25rem;
+      line-height:1.1;
+      color:var(--ink);
+    }
+    .hero:before{
       content:"";
       position:absolute;
-      inset:-120px -140px auto auto;
-      width: 280px;
-      height: 280px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, rgba(122,162,255,.25), rgba(122,162,255,0) 65%);
-      filter: blur(2px);
-      pointer-events:none;
+      right:-90px;
+      top:-90px;
+      width:260px;
+      height:260px;
+      border-radius:999px;
+      background:rgba(169,87,63,.12);
+      border:1px solid rgba(169,87,63,.16);
     }
-
-    .kicker{
-      color: var(--muted);
-      font-size: 14px;
-      letter-spacing: .02em;
-      margin: 0 0 6px;
+    .eyebrow{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--clay-dark);
+      font-weight:700;
     }
-
+    h1, h2, h3{
+      font-family:var(--serif);
+      line-height:1.12;
+      color:var(--ink);
+    }
     h1{
-      margin: 0 0 10px;
-      font-size: 34px;
-      line-height: 1.15;
+      margin:0;
+      font-size:clamp(2.5rem, 6vw, 5.3rem);
+      letter-spacing:-.045em;
+      max-width:8.5ch;
+    }
+    .hero p{
+      margin:18px 0 0;
+      max-width:68ch;
+      color:var(--muted);
+      font-size:1.08rem;
+    }
+    .hero-card{
+      position:relative;
+      z-index:1;
+      border-radius:24px;
+      background:var(--plum);
+      color:#fff8ef;
+      padding:24px;
+      box-shadow:0 16px 34px rgba(52,36,56,.2);
+    }
+    .hero-card h2{
+      margin:0 0 12px;
+      color:#fff8ef;
+      font-size:1.6rem;
+    }
+    .hero-card p{color:#eadfda;margin:0;}
+    .hero-card .small-rule{
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.18);
+      font-size:.95rem;
     }
 
-    .sub{
-      margin: 0 0 14px;
-      color: var(--muted);
-      max-width: 75ch;
+    .topbar{
+      margin:18px 0 0;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border:1px solid rgba(217,194,169,.9);
+      background:rgba(255,250,241,.78);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow-soft);
+      border-radius:999px;
+      padding:10px 12px 10px 16px;
+    }
+    .status{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .status-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:var(--sage);
+    }
+    .top-actions{display:flex; gap:8px; flex-wrap:wrap;}
+
+    button, .button-link{
+      appearance:none;
+      border:1px solid rgba(116,57,40,.24);
+      border-radius:999px;
+      background:var(--white);
+      color:var(--clay-dark);
+      font-weight:700;
+      font-size:.95rem;
+      padding:10px 14px;
+      cursor:pointer;
+      text-decoration:none;
+      box-shadow:0 6px 16px rgba(71,45,29,.08);
+    }
+    button:hover, .button-link:hover{transform:translateY(-1px);}
+    .primary{
+      background:var(--clay);
+      color:#fffaf4;
+      border-color:var(--clay);
     }
 
-    .jump{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
+    .layout{
+      display:grid;
+      grid-template-columns:250px minmax(0,1fr);
+      gap:22px;
+      margin-top:22px;
+      align-items:start;
     }
+    .side{
+      position:sticky;
+      top:18px;
+      border:1px solid rgba(217,194,169,.92);
+      border-radius:24px;
+      background:rgba(255,250,241,.82);
+      box-shadow:var(--shadow-soft);
+      padding:16px;
+    }
+    .side p{
+      margin:0 0 10px;
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--clay-dark);
+      font-weight:700;
+    }
+    .side a{
+      display:block;
+      padding:10px 12px;
+      border-radius:14px;
+      color:var(--ink);
+      text-decoration:none;
+      font-size:.96rem;
+    }
+    .side a:hover{background:#f2e2cf;}
 
-    .pill{
+    main{display:grid; gap:22px;}
+    section{
+      border:1px solid rgba(217,194,169,.92);
+      border-radius:var(--radius);
+      background:rgba(255,250,241,.9);
+      box-shadow:var(--shadow-soft);
+      padding:28px;
+      scroll-margin-top:20px;
+    }
+    .dark-section{
+      background:linear-gradient(135deg, var(--plum), #433044);
+      color:#fff7ec;
+      border-color:rgba(52,36,56,.2);
+    }
+    .dark-section h2, .dark-section h3{color:#fff7ec;}
+    .dark-section p, .dark-section li{color:#f0e5dc;}
+    h2{margin:0 0 12px;font-size:clamp(1.8rem,3vw,2.7rem);letter-spacing:-.025em;}
+    h3{margin:0 0 8px;font-size:1.35rem;}
+    p{margin:10px 0;color:var(--muted);}
+    ul, ol{margin:10px 0 0 1.25rem;padding:0;color:var(--muted);}
+    li{margin:7px 0;}
+
+    .cards-3{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:16px;
+      margin-top:18px;
+    }
+    .part-card{
+      position:relative;
+      overflow:hidden;
+      background:var(--white);
+      border:1px solid rgba(217,194,169,.9);
+      border-radius:22px;
+      padding:20px;
+      min-height:100%;
+    }
+    .part-card:before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      width:100%;
+      height:7px;
+      background:var(--clay);
+    }
+    .part-card:nth-child(2):before{background:var(--gold);}
+    .part-card:nth-child(3):before{background:var(--sage);}
+    .label{
       display:inline-flex;
       align-items:center;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(17,21,33,.9);
-      color: var(--text);
-      font-size: 14px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.18);
-      transition: transform .08s ease;
+      border:1px solid rgba(116,57,40,.18);
+      background:#f5e6d4;
+      color:var(--clay-dark);
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:700;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      margin-bottom:12px;
     }
-    .pill:hover{ transform: translateY(-1px); text-decoration: none; border-color: rgba(122,162,255,.55); }
-    .pill small{ color: var(--muted-2); }
-
-    main{ margin-top: 18px; display: grid; gap: 18px; }
-
-    section{
-      background: linear-gradient(180deg, rgba(21,25,36,.92), rgba(17,21,33,.92));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    section h2{
-      margin: 0 0 10px;
-      font-size: 22px;
-      line-height: 1.2;
-    }
-
-    section p{ margin: 10px 0; color: var(--text); }
-    .muted{ color: var(--muted); }
-
-    .grid-3{
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    @media (max-width: 860px){
-      .grid-3{ grid-template-columns: 1fr; }
-      h1{ font-size: 30px; }
-    }
-
-    .card{
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      background: rgba(15,17,21,.55);
-    }
-
-    .tag{
-      display:inline-block;
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      background: rgba(17,21,33,.7);
-      margin-bottom: 10px;
-    }
-
-    .card h3{
-      margin: 0 0 8px;
-      font-size: 18px;
-      line-height: 1.25;
-    }
-
-    ul{ margin: 10px 0 0 18px; color: var(--muted); }
-    li{ margin: 6px 0; }
-
-    .example{
-      border-left: 4px solid var(--accent);
-      padding: 12px 14px;
-      background: rgba(122,162,255,.08);
-      border-radius: 12px;
-      margin-top: 10px;
-    }
-
-    .label-line{
-      display:flex;
-      align-items: baseline;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 12px 0 6px;
-    }
-
-    .label{
-      font-size: 12px;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 4px 9px;
-      background: rgba(17,21,33,.7);
-    }
-    .label.top{ border-color: rgba(122,162,255,.6); }
-    .label.fill{ border-color: rgba(255,210,122,.55); }
-    .label.bottom{ border-color: rgba(126,240,196,.55); }
+    .label.gold{background:#f3e5bd;color:#654713;}
+    .label.sage{background:#e0e7dc;color:#3f5139;}
 
     .model{
-      background: rgba(15,17,21,.55);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 10px;
-    }
-
-    .model p{
-      margin: 10px 0;
-      color: var(--text);
-    }
-
-    .callout{
-      display: grid;
-      gap: 12px;
-      grid-template-columns: 1.1fr .9fr;
-      align-items: start;
-    }
-    @media (max-width: 860px){
-      .callout{ grid-template-columns: 1fr; }
-    }
-
-    .box{
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      background: rgba(15,17,21,.55);
-    }
-
-    .box h3{ margin: 0 0 8px; font-size: 18px; }
-    .box p, .box li{ color: var(--muted); }
-
-    pre{
-      margin: 0;
-      white-space: pre-wrap;
-      word-break: break-word;
-      background: rgba(11,13,18,.75);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      overflow: auto;
-      color: var(--text);
-    }
-
-    .actions{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    button{
-      appearance: none;
-      border: 1px solid var(--border);
-      background: rgba(17,21,33,.92);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: transform .08s ease, border-color .12s ease;
-    }
-    button:hover{ transform: translateY(-1px); border-color: rgba(122,162,255,.55); }
-    button:active{ transform: translateY(0px); }
-
-    .tiny{ font-size: 13px; color: var(--muted-2); margin-top: 8px; }
-
-    .checklist{
       display:grid;
-      gap: 8px;
-      margin-top: 10px;
+      gap:14px;
+      margin-top:18px;
     }
-    .check{
-      display:flex;
-      gap: 10px;
-      align-items:flex-start;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: rgba(15,17,21,.55);
+    .model-row{
+      display:grid;
+      grid-template-columns:170px minmax(0, 1fr);
+      gap:14px;
+      align-items:start;
+      padding:16px;
+      border:1px solid rgba(217,194,169,.9);
+      border-radius:20px;
+      background:rgba(255,253,248,.82);
     }
-    .dot{
-      width: 10px;
-      height: 10px;
-      margin-top: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-      flex: 0 0 auto;
-      opacity: .9;
+    .model-row p{margin:0;color:var(--ink);}
+    .model-note{
+      font-size:.95rem;
+      color:var(--muted);
+      margin-top:8px;
     }
-    .check p{ margin: 0; color: var(--muted); }
+
+    .notice{
+      border-left:6px solid var(--clay);
+      background:#fff6e9;
+      border-radius:18px;
+      padding:16px 18px;
+      margin-top:16px;
+    }
+    .notice p{margin:0;color:var(--ink);}
 
     details{
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: rgba(15,17,21,.55);
-      padding: 12px 14px;
+      margin-top:14px;
+      border:1px solid rgba(217,194,169,.9);
+      border-radius:18px;
+      background:rgba(255,253,248,.8);
+      padding:14px 16px;
     }
     summary{
-      cursor: pointer;
-      color: var(--text);
-      font-weight: 600;
-      list-style: none;
-    }
-    summary::-webkit-details-marker{ display: none; }
-    details p, details li{ color: var(--muted); }
-
-    footer{
-      margin-top: 16px;
-      color: var(--muted-2);
-      font-size: 13px;
-      text-align: center;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--clay-dark);
     }
 
-    .kbd{
-      display:inline-block;
-      padding: 2px 6px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(17,21,33,.92);
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
+    .practice-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+    .field-card{
+      border:1px solid rgba(217,194,169,.9);
+      border-radius:22px;
+      background:var(--white);
+      padding:18px;
+    }
+    .field-card.full{grid-column:1 / -1;}
+    .brainstorm-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:14px;
+      margin:14px 0 16px;
+    }
+    .brain-card{
+      border:1px solid rgba(217,194,169,.9);
+      border-radius:18px;
+      background:#fffaf1;
+      padding:14px;
+    }
+    .brain-card label{
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+    .brain-card textarea{
+      min-height:105px;
+      font-size:.97rem;
+    }
+    .example-split{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin:14px 0 16px;
+    }
+    .quote-example{
+      border:1px solid rgba(199,154,60,.35);
+      border-radius:18px;
+      padding:14px;
+      background:#fff8e7;
+      margin:14px 0;
+    }
+    .quote-example h4{
+      margin:0 0 8px;
+      font-family:var(--sans);
+      font-size:.95rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#654713;
+    }
+    .quote-example p{margin:0;color:var(--ink);font-size:.96rem;}
+    .student-quote-preview{
+      border:1px solid rgba(111,127,103,.32);
+      border-radius:18px;
+      padding:14px;
+      background:#f6f7ef;
+      margin:30px 0 14px;
+    }
+    .student-quote-preview h4{
+      margin:0 0 8px;
+      font-family:var(--sans);
+      font-size:.95rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#3f5139;
+    }
+    .student-quote-preview p{margin:0;color:var(--ink);font-size:.96rem;white-space:pre-wrap;}
+    .mini-example{
+      border:1px solid rgba(217,194,169,.9);
+      border-radius:18px;
+      padding:14px;
+      background:#fffdf8;
+    }
+    .mini-example.bad{
+      border-color:rgba(169,87,63,.28);
+      background:#fff4ed;
+    }
+    .mini-example.good{
+      border-color:rgba(111,127,103,.32);
+      background:#f4f7ef;
+    }
+    .mini-example h4{
+      margin:0 0 8px;
+      font-family:var(--sans);
+      font-size:.95rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--clay-dark);
+    }
+    .mini-example.good h4{color:#3f5139;}
+    .mini-example p{margin:0;color:var(--ink);font-size:.96rem;}
+    label{
+      display:block;
+      font-weight:700;
+      color:var(--ink);
+      margin-bottom:8px;
+    }
+    .hint{font-size:.94rem;color:var(--muted);margin:-2px 0 8px;}
+    input, textarea{
+      width:100%;
+      border:1px solid rgba(102,91,83,.25);
+      border-radius:16px;
+      background:#fffdf9;
+      color:var(--ink);
+      font:inherit;
+      padding:13px 14px;
+    }
+    textarea{min-height:130px;resize:vertical;}
+    .small-textarea{min-height:90px;}
+
+    .meter{
+      margin-top:10px;
+      display:grid;
+      gap:8px;
+    }
+    .meter-line{
+      height:10px;
+      border-radius:999px;
+      background:#ead8c2;
+      overflow:hidden;
+    }
+    .meter-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--clay), var(--sage));
+      transition:width .25s ease;
+    }
+    .meter-text{font-size:.9rem;color:var(--muted);}
+
+    .submission-box{
+      margin-top:18px;
+      border:2px solid rgba(169,87,63,.35);
+      border-radius:22px;
+      background:#fffdf8;
+      padding:20px;
+    }
+    .submission-output{
+      white-space:pre-wrap;
+      min-height:160px;
+      border:1px dashed rgba(116,57,40,.35);
+      border-radius:18px;
+      padding:16px;
+      background:#fffaf1;
+      color:var(--ink);
+    }
+
+
+    .footer-note{text-align:center;color:var(--muted);font-size:.95rem;margin-top:24px;}
+
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr;padding:88px 30px 30px;}
+      .layout{grid-template-columns:1fr;}
+      .side{position:relative;top:auto;}
+      .side nav{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:4px;}
+      .cards-3, .practice-grid, .brainstorm-grid, .example-split{grid-template-columns:1fr;}
+      .model-row{grid-template-columns:1fr;}
+      .field-card.full{grid-column:auto;}
+    }
+    @media (max-width:640px){
+      body{font-size:17px;}
+      .page{width:min(100% - 22px, var(--max));padding-top:12px;}
+      .hero{padding:88px 22px 22px;}
+      section{padding:22px;}
+      .time-box{top:18px;right:18px;left:18px;min-width:0;text-align:center;}
+      .topbar{border-radius:24px;align-items:flex-start;}
+      .side nav{grid-template-columns:1fr;}
+    }
+
+    @media print{
+      body{background:#fff;color:#000;font-size:12pt;}
+      .hero, .topbar, .side, section:not(#submit), .footer-note, .print-hide{display:none !important;}
+      .page{width:100%;padding:0;margin:0;}
+      .layout{display:block;margin:0;}
+      #submit{display:block;border:0;box-shadow:none;padding:0;background:#fff;}
+      #submit h2{font-size:18pt;color:#000;}
+      .submission-box{border:0;padding:0;margin:0;}
+      .submission-output{border:0;background:#fff;padding:0;color:#000;}
+      button{display:none;}
     }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <header id="top">
-      <p class="kicker">Class help page</p>
-      <h1>Creating Quote Sandwiches</h1>
-      <p class="sub">
-        A quote sandwich helps you integrate quotes smoothly, so your reader always knows what the quote is, why it is here, and how it connects to your point.
-      </p>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-      <nav class="jump" aria-label="Jump links">
-        <a class="pill" href="#what-is">What it is <small>definition</small></a>
-        <a class="pill" href="#three-parts">The 3 parts <small>top, filling, bottom</small></a>
-        <a class="pill" href="#model">Model <small>full example</small></a>
-        <a class="pill" href="#build">Build your own <small>OOH activity</small></a>
-        <a class="pill" href="#submit">Canvas submission <small>what to turn in</small></a>
-        <a class="pill" href="#checklist">Checklist <small>quick self-check</small></a>
-      </nav>
+  <div class="page">
+    <header class="hero">
+      <div class="time-box" aria-label="Estimated time">
+        <span class="time-label">Estimated time</span>
+        <span class="time-value">20–30 min</span>
+      </div>
+      <div>
+        <p class="eyebrow">ENG 101 practice page</p>
+        <h1>Creating Quote Sandwiches</h1>
+        <p>A quote sandwich helps you place evidence inside your own thinking. The quote is not the whole paragraph. Your introduction and explanation are what make the quote useful.</p>
+      </div>
+      <aside class="hero-card" aria-label="Main idea">
+        <h2>The simple rule</h2>
+        <p>Do not drop a quote into a paragraph and walk away from it.</p>
+        <p class="small-rule">A strong quote sandwich has a sentence before the quote and at least two sentences after the quote.</p>
+      </aside>
     </header>
 
-    <main>
-      <section id="what-is">
-        <h2>What is a quote sandwich?</h2>
-        <p class="muted">
-          A quote sandwich is a way to integrate quotes into your writing so they do not feel dropped in. Every quote gets:
-          an introduction, the quote itself, and an explanation that connects to your point.
-        </p>
+    <div class="topbar" aria-label="Page tools">
+      <div class="status"><span class="status-dot" aria-hidden="true"></span><span id="saveStatus">Autosave is ready.</span></div>
+      <div class="top-actions">
+        <button type="button" id="printPage" class="primary">Print / Save as PDF</button>
+        <button type="button" id="clearWork">Clear work</button>
+      </div>
+    </div>
 
-        <details>
-          <summary>Why teachers care about this</summary>
-          <p>
-            Quotes do not automatically prove your point. Your job is to explain how the quote supports your claim.
-            If you end a paragraph with a quote and no explanation, the reader has to do your thinking for you.
-          </p>
-        </details>
-      </section>
+    <div class="layout">
+      <aside class="side" aria-label="Page navigation">
+        <p>On this page</p>
+        <nav>
+          <a href="#parts">The 3 parts</a>
+          <a href="#model">Model example</a>
+          <a href="#practice">Build your own</a>
+          <a href="#works-cited">Works Cited help</a>
+          <a href="#submit">What to submit</a>
+        </nav>
+      </aside>
 
-      <section id="three-parts">
-        <h2>The three parts</h2>
+      <main id="main">
+        <section id="parts">
+          <h2>The three parts</h2>
+          <p>Think of this as a small structure that keeps your evidence from floating by itself. Each part has a job.</p>
 
-        <div class="grid-3">
-          <div class="card">
-            <span class="tag">Top Bread</span>
-            <h3>Introduce the quote</h3>
-            <p class="muted">
-              Give context so the reader understands who is speaking and why the quote matters.
-            </p>
-            <ul>
-              <li>Name the author (usually last name).</li>
-              <li>Name the text or source (if needed).</li>
-              <li>Say what the quote is about, in your own words.</li>
-            </ul>
-
-            <div class="example">
-              <div class="label-line"><span class="label top">Example</span></div>
-              <p>
-                In her essay “The Power of Stories,” Jones argues that storytelling is essential for human connection.
-              </p>
-            </div>
-          </div>
-
-          <div class="card">
-            <span class="tag">Filling</span>
-            <h3>Insert the quote</h3>
-            <p class="muted">
-              Use the exact wording, and include your MLA parenthetical citation.
-            </p>
-            <ul>
-              <li>Keep quotes short unless you truly need more.</li>
-              <li>Use quotation marks for short quotes.</li>
-              <li>MLA parenthetical citation goes at the end of the sentence.</li>
-            </ul>
-
-            <div class="example">
-              <div class="label-line"><span class="label fill">Example</span></div>
-              <p>
-                Jones states, “Stories are how we make sense of the world and connect to others” (45).
-              </p>
-            </div>
-          </div>
-
-          <div class="card">
-            <span class="tag">Bottom Bread</span>
-            <h3>Explain the quote</h3>
-            <p class="muted">
-              Interpret the quote. Do not just repeat it. Tell the reader how it supports your point.
-            </p>
-            <ul>
-              <li>What does this quote show?</li>
-              <li>How does it connect to your thesis or claim?</li>
-              <li>Why does it matter for your argument?</li>
-            </ul>
-
-            <div class="example">
-              <div class="label-line"><span class="label bottom">Example</span></div>
-              <p>
-                This suggests that storytelling is not just entertainment but a fundamental way humans relate to each other.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="model">
-        <h2>Model quote sandwich (all together)</h2>
-        <p class="muted">Notice how each sentence has a job.</p>
-
-        <div class="model" role="group" aria-label="Model quote sandwich">
-          <div class="label-line"><span class="label top">Top Bread</span></div>
-          <p>In her essay “The Power of Stories,” Jones argues that storytelling is essential for human connection.</p>
-
-          <div class="label-line"><span class="label fill">Filling</span></div>
-          <p>Jones states, “Stories are how we make sense of the world and connect to others” (45).</p>
-
-          <div class="label-line"><span class="label bottom">Bottom Bread</span></div>
-          <p>This suggests that storytelling is not just a form of entertainment but a fundamental way humans relate to each other.</p>
-        </div>
-      </section>
-
-      <section id="build">
-        <h2>Build your own quote sandwich (Occupational Outlook Handbook)</h2>
-
-        <div class="callout">
-          <div class="box">
-            <h3>What you do</h3>
-            <ol style="margin: 10px 0 0 18px; color: var(--muted);">
-              <li>Open the Occupational Outlook Handbook page for your chosen career.</li>
-              <li>Find one short quote (1 to 2 sentences) that gives a useful fact or claim about the career.</li>
-              <li>Write a quote sandwich using that quote.</li>
-              <li>Submit it on Canvas (copy and paste).</li>
-            </ol>
-
-            <details style="margin-top: 12px;">
-              <summary>What counts as a good quote for this</summary>
+          <div class="cards-3">
+            <article class="part-card">
+              <span class="label">Top bread</span>
+              <h3>Introduce the quote</h3>
+              <p>Tell the reader where the quote comes from and what the quote is about. This gives the quote a reason to be there.</p>
               <ul>
-                <li>Job duties, work environment, pay, growth outlook, education, skills, or licensing.</li>
-                <li>Something that helps you explain what the career is really like.</li>
-                <li>Something you can respond to and interpret (not just a random sentence).</li>
+                <li>Name the source or organization.</li>
+                <li>Signal what the quote will help explain.</li>
+                <li>Keep it short and direct.</li>
               </ul>
-            </details>
+            </article>
+
+            <article class="part-card">
+              <span class="label gold">Filling</span>
+              <h3>Use the quote</h3>
+              <p>Copy the exact words from the source and include the citation information that belongs with it.</p>
+              <ul>
+                <li>Use quotation marks around borrowed words.</li>
+                <li>Keep the quote focused.</li>
+                <li>Do not invent page numbers if the page has none.</li>
+              </ul>
+            </article>
+
+            <article class="part-card">
+              <span class="label sage">Bottom bread</span>
+              <h3>Explain the quote</h3>
+              <p>This is where your thinking matters most. Explain what the quote shows and why it matters for your paragraph.</p>
+              <ul>
+                <li>Do not repeat the quote in different words.</li>
+                <li>Connect it back to your claim.</li>
+                <li>For this activity, write at least two sentences.</li>
+              </ul>
+            </article>
           </div>
 
-          <div class="box">
-            <h3>Rules</h3>
-            <ul>
-              <li>Quote must be 1 to 2 sentences max.</li>
-              <li>Your Bottom Bread must be at least 2 sentences.</li>
-              <li>Your explanation must connect to your career goal (why it matters for your plan).</li>
-              <li>If the page does not show page numbers, that is fine. Do not invent a page number.</li>
-            </ul>
-            <p class="tiny">
-              Tip: Aim for a quote you can actually analyze, not just one you can copy.
-            </p>
+          <div class="notice">
+            <p>The quote should never be the last sentence of the paragraph. The reader needs your explanation after the quote.</p>
           </div>
-        </div>
+        </section>
 
-        <h3 style="margin-top: 14px;">Copy and paste template</h3>
-        <p class="muted">
-          Fill this in. Keep the language simple. Your Bottom Bread should explain the meaning and why it matters for your plan.
-        </p>
+        <section id="model" class="dark-section">
+          <h2>Model quote sandwich</h2>
+          <p>Notice that the quote is surrounded by the writer's own language.</p>
 
-        <pre id="templateText">Top Bread (Introduce):
-On the Occupational Outlook Handbook page for [Career], the U.S. Bureau of Labor Statistics explains [what the quote is about].
+          <div class="model" aria-label="Model quote sandwich example">
+            <div class="model-row">
+              <div><span class="label">Top bread</span></div>
+              <div>
+                <p>On the Occupational Outlook Handbook page for dental hygienists, the U.S. Bureau of Labor Statistics explains that dental hygienists do more than clean teeth.</p>
+                <p class="model-note">This prepares the reader for what the quote will show.</p>
+              </div>
+            </div>
 
-Filling (Quote + MLA parenthetical if available):
-The OOH states, “[paste quote here]”.
+            <div class="model-row">
+              <div><span class="label gold">Filling</span></div>
+              <div>
+                <p>The OOH states, “Dental hygienists examine patients for signs of oral diseases, such as gingivitis, and provide preventive care.”</p>
+                <p class="model-note">This gives the actual evidence from the source.</p>
+              </div>
+            </div>
 
-Bottom Bread (Explain):
-This matters because [your interpretation that does not just repeat the info from the quote]. Specifically, [how it affects the choices of a student choosing this career path: major, training, skills, expectations, etc.].</pre>
+            <div class="model-row">
+              <div><span class="label sage">Bottom bread</span></div>
+              <div>
+                <p>This quote shows that dental hygiene involves observation, patient care, and prevention, not just one repeated task. That matters because someone interested in this career should be ready to communicate with patients and notice health concerns carefully.</p>
+                <p class="model-note">This explains what the quote shows and why it matters.</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <div class="actions">
-          <button type="button" data-copy="#templateText">Copy template</button>
-        </div>
+        <section id="practice">
+          <h2>Build your own quote sandwich</h2>
+          <p>Use the Occupational Outlook Handbook page for your career. First, gather the source information. Then build the quote sandwich in the same order it should appear in your paragraph.</p>
 
-        <h3 style="margin-top: 14px;">Works Cited line (copy and paste)</h3>
-        <p class="muted">
-          Replace the brackets. For OOH pages, you will almost always use the web citation format and include an access date.
-        </p>
+          <h3 style="margin-top:22px;">Step 1: Gather your source information</h3>
+          <div class="practice-grid">
+            <div class="field-card">
+              <label for="career">Career you are researching</label>
+              <p class="hint">Example: dental hygienist, electrician, registered nurse, software developer.</p>
+              <input id="career" data-save="career" type="text" placeholder="Type your career here" />
+            </div>
 
-        <pre id="worksCitedText">“[Page Title].” Occupational Outlook Handbook, U.S. Bureau of Labor Statistics, [URL]. Accessed [Month Day, Year].</pre>
+            <div class="field-card">
+              <label for="sourceTitle">Full source title</label>
+              <p class="hint">Use the title of the OOH page or source page.</p>
+              <input id="sourceTitle" data-save="sourceTitle" type="text" placeholder="Example: Dental Hygienists" />
+            </div>
 
-        <div class="actions">
-          <button type="button" data-copy="#worksCitedText">Copy Works Cited line</button>
-        </div>
-      </section>
+            <div class="field-card full">
+              <label for="sourceIdea">What is this source section about?</label>
+              <p class="hint">Write the topic in your own words before you quote it. This helps you introduce the evidence instead of just dropping it in.</p>
+              <textarea id="sourceIdea" data-save="sourceIdea" class="small-textarea" placeholder="Example: This section explains the daily responsibilities of dental hygienists."></textarea>
+            </div>
+          </div>
 
-      <section id="submit">
-        <h2>Canvas submission</h2>
-        <p class="muted">
-          Submit to the assignment: <strong>Quote Sandwich (OOH)</strong>
-        </p>
+          <h3 style="margin-top:26px;">Step 2: Build the quote sandwich</h3>
+          <div class="practice-grid">
+            <div class="field-card full">
+              <span class="label">Top bread</span>
+              <label for="topBread">Introduce the quote</label>
+              <p class="hint">Tell the reader where the quote comes from and what the quote is about.</p>
+              <textarea id="topBread" data-save="topBread" class="small-textarea" placeholder="On the Occupational Outlook Handbook page for..., the U.S. Bureau of Labor Statistics explains..."></textarea>
+            </div>
 
-        <div class="box">
-          <h3>What to paste into Canvas</h3>
-          <ol style="margin: 10px 0 0 18px; color: var(--muted);">
-            <li>Your full 3-part quote sandwich (Top Bread, Filling, Bottom Bread).</li>
-            <li>Your Works Cited line.</li>
-          </ol>
-          <p class="tiny">
-            If you want to format it cleanly in Canvas, add line breaks between parts. If Canvas removes your spacing, that is fine.
-          </p>
-        </div>
-      </section>
+            <div class="field-card full">
+              <span class="label gold">Filling</span>
+              <label for="quoteSentence">Use the quote in a sentence</label>
+              <p class="hint">Write the full sentence that will hold your quote. Include the exact quoted words.</p>
+              <textarea id="quoteSentence" data-save="quoteSentence" placeholder="The source states, “paste the exact quote here.”"></textarea>
+            </div>
 
-      <section id="checklist">
-        <h2>Quick checklist</h2>
-        <div class="checklist">
-          <div class="check"><span class="dot"></span><p>Did I introduce the quote (who, what, why this quote is here)?</p></div>
-          <div class="check"><span class="dot"></span><p>Did I keep the quote short and copy it exactly?</p></div>
-          <div class="check"><span class="dot"></span><p>Did I include MLA citation info when available (and not invent page numbers)?</p></div>
-          <div class="check"><span class="dot"></span><p>Did I explain what the quote shows and how it supports my point?</p></div>
-          <div class="check"><span class="dot"></span><p>Did I write at least 2 sentences of Bottom Bread (analysis, not summary)?</p></div>
-          <div class="check"><span class="dot"></span><p>Did I avoid ending my paragraph with a quote?</p></div>
-        </div>
+            <div class="field-card full">
+              <span class="label sage">Bottom bread</span>
+              <label for="standOut">Brainstorm before you explain</label>
+              <p class="hint">The goal is not to say the quote again. The goal is to explain what the quote helps us understand.</p>
 
-        <details style="margin-top: 12px;">
-          <summary>Common issues</summary>
-          <ul>
-            <li>Dropping a quote with no Top Bread.</li>
-            <li>Explaining what the quote says instead of what it does (analysis).</li>
-            <li>Using a quote that is so long that your explanation becomes tiny.</li>
-            <li>Using a quote that is only a definition or a bland statement you cannot interpret.</li>
-          </ul>
-        </details>
+              <div class="quote-example" aria-label="Original quote for comparison">
+                <h4>Example quote</h4>
+                <p>“Dental hygienists examine patients for signs of oral diseases, such as gingivitis, and provide preventive care.”</p>
+              </div>
 
-        <div class="actions" style="margin-top: 12px;">
-          <a class="pill" href="#top">Back to top <small>jump</small></a>
-        </div>
-      </section>
+              <div class="example-split" aria-label="Repeating versus explaining example">
+                <div class="mini-example bad">
+                  <h4>Avoid simply repeating info</h4>
+                  <p>This quote says dental hygienists examine patients and provide preventive care.</p>
+                </div>
+                <div class="mini-example good">
+                  <h4>Try this instead</h4>
+                  <p>This quote shows that dental hygienists need observation and patient-care skills. This matters because someone entering this field should expect to do more than basic cleaning tasks.</p>
+                </div>
+              </div>
 
-      <footer>
-        <p>
-          If you see something confusing on this page, tell me what line or section it is in.
-          That helps me fix it fast.
-        </p>
-      </footer>
-    </main>
+              <div class="student-quote-preview" aria-label="Your quote for brainstorming">
+                <h4>Your quote</h4>
+                <p id="studentQuotePreview">Your quote will appear here after you type it in the Filling box.</p>
+              </div>
+
+              <div class="brainstorm-grid">
+                <div class="brain-card">
+                  <label for="standOut">1. What stands out?</label>
+                  <p class="hint">Pick a key idea, word, responsibility, skill, or expectation from your quote.</p>
+                  <textarea id="standOut" data-save="standOut" placeholder="A key idea that stands out is..."></textarea>
+                </div>
+
+                <div class="brain-card">
+                  <label for="quoteShows">2. What does it show?</label>
+                  <p class="hint">Move from summary into interpretation.</p>
+                  <textarea id="quoteShows" data-save="quoteShows" placeholder="This quote shows that..."></textarea>
+                </div>
+
+                <div class="brain-card">
+                  <label for="quoteMatters">3. Why does it matter?</label>
+                  <p class="hint">Connect the quote to your career research or point.</p>
+                  <textarea id="quoteMatters" data-save="quoteMatters" placeholder="This matters because..."></textarea>
+                </div>
+              </div>
+
+              <label for="bottomBread">Final Bottom Bread</label>
+              <p class="hint">Use your brainstorming above to write at least two full sentences. Do not just repeat the quote.</p>
+              <textarea id="bottomBread" data-save="bottomBread" placeholder="This quote shows that... This matters because..."></textarea>
+              <div class="meter" aria-live="polite">
+                <div class="meter-line"><div class="meter-fill" id="sentenceMeter"></div></div>
+                <div class="meter-text" id="sentenceFeedback">Bottom bread goal: at least two sentences of explanation.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="works-cited">
+          <h2>Works Cited help</h2>
+          <p>For this assignment, you need a Works Cited line after your quote sandwich. Replace the bracketed parts with your own information.</p>
+
+          <div class="field-card">
+            <label for="url">Source URL</label>
+            <p class="hint">Paste the URL for the page you used.</p>
+            <input id="url" data-save="url" type="text" placeholder="Paste source URL here" />
+          </div>
+
+          <details>
+            <summary>Copyable Works Cited template</summary>
+            <p>“[Page Title].” <em>Occupational Outlook Handbook</em>, U.S. Bureau of Labor Statistics, [URL]. Accessed [Month Day, Year].</p>
+          </details>
+
+          <div class="notice">
+            <p>Do not use the whole website name as the in-text citation if you have a clear page title. Start with the first useful part of the Works Cited source.</p>
+          </div>
+        </section>
+
+        <section id="submit">
+          <h2>What you will submit</h2>
+          <p class="print-hide">This box shows the stripped-down worksheet version of your work. When you are finished, use the Print / Save as PDF button and upload the PDF to Canvas.</p>
+
+          <div class="top-actions print-hide" style="margin-top:14px;">
+            <button type="button" id="printPageBottom" class="primary">Print / Save as PDF</button>
+          </div>
+
+          <div class="submission-box">
+            <h3>Quote Sandwich Worksheet</h3>
+            <div id="submissionOutput" class="submission-output" aria-live="polite"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <p class="footer-note">If something on this page is confusing, tell me the section name so I can fix it.</p>
   </div>
 
   <script>
-    // Copy-to-clipboard for template and Works Cited line
-    function copyFrom(selector){
-      const el = document.querySelector(selector);
-      if(!el) return;
-      const text = el.innerText;
+    const storageKey = "quote-sandwich-v2";
+    const fields = Array.from(document.querySelectorAll("[data-save]"));
+    const saveStatus = document.getElementById("saveStatus");
+    const output = document.getElementById("submissionOutput");
+    const sentenceMeter = document.getElementById("sentenceMeter");
+    const sentenceFeedback = document.getElementById("sentenceFeedback");
+    const studentQuotePreview = document.getElementById("studentQuotePreview");
 
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => {
-          flashCopied(selector);
-        }).catch(() => fallbackCopy(text, selector));
-      } else {
-        fallbackCopy(text, selector);
-      }
+    function getData(){
+      const data = {};
+      fields.forEach(field => data[field.dataset.save] = field.value);
+      return data;
     }
 
-    function fallbackCopy(text, selector){
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.setAttribute("readonly", "");
-      ta.style.position = "absolute";
-      ta.style.left = "-9999px";
-      document.body.appendChild(ta);
-      ta.select();
+    function saveData(){
+      localStorage.setItem(storageKey, JSON.stringify(getData()));
+      saveStatus.textContent = "Autosaved on this device.";
+      window.clearTimeout(saveData.timer);
+      saveData.timer = window.setTimeout(() => saveStatus.textContent = "Autosave is ready.", 1300);
+    }
+
+    function loadData(){
       try{
-        document.execCommand("copy");
-        flashCopied(selector);
-      } catch (e){
-        alert("Copy did not work. You can manually select and copy the text.");
+        const data = JSON.parse(localStorage.getItem(storageKey) || "{}");
+        fields.forEach(field => {
+          if(data[field.dataset.save] !== undefined){ field.value = data[field.dataset.save]; }
+        });
+      } catch(error){
+        console.warn("Saved work could not be loaded.", error);
       }
-      document.body.removeChild(ta);
     }
 
-    function flashCopied(selector){
-      const btn = document.querySelector('button[data-copy="' + selector + '"]');
-      if(!btn) return;
-      const original = btn.textContent;
-      btn.textContent = "Copied";
-      btn.style.borderColor = "rgba(126,240,196,.65)";
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.style.borderColor = "";
-      }, 900);
+    function countSentences(text){
+      const matches = text.trim().match(/[^.!?]+[.!?]+/g);
+      return matches ? matches.length : 0;
     }
 
-    document.querySelectorAll("button[data-copy]").forEach(btn => {
-      btn.addEventListener("click", () => copyFrom(btn.getAttribute("data-copy")));
+    function buildSubmission(){
+      const data = getData();
+      const career = data.career || "[career]";
+      const title = data.sourceTitle || "[source title]";
+      const sourceIdea = data.sourceIdea || "[brief note about what the source section explains]";
+      const top = data.topBread || "[Introduce the quote here.]";
+      const quoteSentence = data.quoteSentence || "[Use the quote in a sentence here.]";
+      const bottom = data.bottomBread || "[Explain the quote here.]";
+      const url = data.url || "[URL]";
+      const today = new Date();
+      const accessDate = today.toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"});
+
+      return `Career: ${career}
+Source note: ${sourceIdea}
+
+Quote Sandwich
+${top}
+${quoteSentence}
+${bottom}
+
+Works Cited
+“${title}.” Occupational Outlook Handbook, U.S. Bureau of Labor Statistics, ${url}. Accessed ${accessDate}.`;
+    }
+
+    function updateSubmission(){
+      output.textContent = buildSubmission();
+      const quoteSentenceValue = document.getElementById("quoteSentence").value.trim();
+      if(studentQuotePreview){
+        studentQuotePreview.textContent = quoteSentenceValue || "Your quote will appear here after you type it in the Filling box.";
+      }
+      const sentences = countSentences(document.getElementById("bottomBread").value);
+      const percent = Math.min(100, sentences * 50);
+      sentenceMeter.style.width = percent + "%";
+      if(sentences >= 2){
+        sentenceFeedback.textContent = "Good. You have at least two sentences of explanation.";
+      } else if(sentences === 1){
+        sentenceFeedback.textContent = "You have one sentence. Add one more sentence that explains why the quote matters.";
+      } else {
+        sentenceFeedback.textContent = "Bottom bread goal: at least two sentences of explanation.";
+      }
+    }
+
+    fields.forEach(field => {
+      field.addEventListener("input", () => {
+        updateSubmission();
+        saveData();
+      });
     });
+
+    document.getElementById("printPage").addEventListener("click", () => window.print());
+    document.getElementById("printPageBottom").addEventListener("click", () => window.print());
+
+    document.getElementById("clearWork").addEventListener("click", () => {
+      const ok = window.confirm("Clear the saved work on this page?");
+      if(!ok) return;
+      localStorage.removeItem(storageKey);
+      fields.forEach(field => field.value = "");
+      updateSubmission();
+      saveStatus.textContent = "Work cleared.";
+    });
+
+    loadData();
+    updateSubmission();
   </script>
 </body>
 </html>
